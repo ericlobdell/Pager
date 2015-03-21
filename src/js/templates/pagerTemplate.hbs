@@ -1,0 +1,24 @@
+<div class="pagination-container">
+    {{#if showMeta}}
+        <div class="pager-meta">Viewing {{batchStart}}-{{batchEnd}} of {{totalItemsCount}} {{itemsAlias}}</div>
+    {{/if}}
+    {{#if hasPages}}
+        <ul class="pager-buttons">
+            {{#if showFirstPageButton}}
+                <li class="pager-button first" data-page-number="{{firstPage}}">{{firstPage}}</li>
+            {{/if}}
+            {{#if hasPreviousPage}}
+                <li class="pager-button previous" data-page-number="{{previousPageNumber}}"><span class="icon-angle-left"></span></li>
+            {{/if}}
+            {{#indicatorsInRange startPageNumber endPageNumber}}
+                <li class="pager-button page-number {{isCurrentPage this ../currentPage}}" data-page-number="{{this}}">{{this}}</li>
+            {{/indicatorsInRange}}
+            {{#if hasNextPage}}
+                <li class="pager-button next" data-page-number="{{nextPageNumber}}"><span class="icon-angle-right"></span></li>
+            {{/if}}
+            {{#if showLastPageButton}}
+                <li class="pager-button last" data-page-number="{{lastPage}}">{{lastPage}}</li>
+            {{/if}}
+        </ul>
+    {{/if}}
+</div>
