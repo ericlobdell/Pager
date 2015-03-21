@@ -6,6 +6,13 @@
   display: table;
   clear: both;
 }
+.pagination-container ul {
+  -webkit-margin-before: 0;
+  -webkit-margin-after: 0;
+  -webkit-margin-start: 0;
+  -webkit-margin-end: 0;
+  -webkit-padding-start: 0;
+}
 .pagination-container .pager-meta {
   float: left;
   height: 1.75em;
@@ -18,6 +25,7 @@
   margin: 0;
   box-sizing: border-box;
   float: left;
+  list-style: none;
 }
 .pagination-container .pager-button {
   width: 1.75em;

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="../dist/css/pager.min.css"/>
+</head>
+<body>
+<h2>Demo</h2>
+
+<div class="container">
+    <div class="pager"></div>
+    <div class="out"></div>
+</div>
+<script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="../dist/js/Pager.js"></script>
+<script type="text/javascript">
+
+    (function ( $ ) {
+        var $pager = $( ".pager" ), $out = $(".out");
+        $( function () {
+            var items = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27 ],
+                    pager = new Pager( items, {
+                        onPageChange: handlePageChange,
+                        itemsPerPage: 5
+                    } );
+        } );
+
+        function handlePageChange( pagerInstance, args ) {
+            var demoOutput = "Items for Page " + args.pageNumber + ":" + JSON.stringify(args.items);
+            $out.html( demoOutput );
+            pagerInstance.renderPagerControl( $pager );
+
+
+            console.log("args: ", args);
+        }
+
+    })( jQuery );
+
+</script>
+</body>
+</html>
