@@ -1,7 +1,7 @@
 /**
  * Created by Eric on 3/16/2015.
  */
-(function ( window, $ ) {
+(function ( window, document, $ ) {
     "use strict";
 
     var _pager = function ( items, config ) {
@@ -11,7 +11,7 @@
 
         _self.itemsPerPage = _cfg.itemsPerPage || 25;
         _self.maxPageIndicators = _cfg.maxPageIndicators || 5;
-        _self.showMeta = !Utils.isUnDefined( _cfg.showMeta ) ? _cfg.showMeta : true;
+        _self.showMeta = !isUnDefined( _cfg.showMeta ) ? _cfg.showMeta : true;
         _self.itemsAlias = _cfg.itemsAlias || "items";
 
         _self.items = items;
@@ -19,23 +19,18 @@
         _self.batchEndNumber = _self.batchStartNumber + _self.itemsPerPage;
         _self.pageNumber = 1;
         _self.totalPageCount = Math.ceil( _numItems / _self.itemsPerPage );
-        _self.onPageChange = new ObservableEvent( _self );
+        _self.onPageChange = _cfg.onPageChange;
 
-        if ( Utils.isFunction( _cfg.onPageChange ) )
-            _self.onPageChange.attach( _cfg.onPageChange );
+        $( document ).on( "click", ".pager-button", function () {
+            var $sender = $( this );
 
-        $( "body" ).on( "click", ".pager-button", function () {
-            var $sender = $( this ),
-                newPageNumber = $sender.data( "page-number" ),
-                isCurrentPage = $sender.hasClass( "current-page" );
-
-            if ( isCurrentPage )
+            if ( $sender.hasClass( "current-page" ) )
                 return;
 
-            _self.loadPage( newPageNumber );
+            _self.loadPage( $sender.data( "page-number" ) );
         } );
 
-        if ( _cfg.deferFirstPageLoad !== false )
+        if ( _cfg.deferFirstPageLoad !== true )
             _self.loadPage( 1 );
 
         return _self;
@@ -55,17 +50,16 @@
             this.items.length :
             endIndex;
 
-        if ( this.onPageChange.hasHandlers() ) {
+        if ( isFunction( this.onPageChange ) ) {
             eventArgs.pageNumber = pageNumber;
             eventArgs[ this.itemsAlias ] = pageItems;
-            this.onPageChange.notify( eventArgs );
+            this.onPageChange( this, eventArgs );
         } else {
             throw new Error( "No handler assigned to Pager.onPageChange event" );
         }
-
     };
 
-    _pager.prototype.renderPagerControl = function ( $el ) {
+    _pager.prototype.renderPagerControl = function ( selector ) {
         var templateArgs = {
                 hasNextPage: this.hasNextPage(),
                 nextPageNumber: this.pageNumber + 1,
@@ -88,7 +82,7 @@
             },
             html = pagerTemplate( templateArgs );
 
-        $el.html( html );
+        $( selector ).html( html );
     };
 
     _pager.prototype.hasNextPage = function () {
@@ -143,7 +137,7 @@
 
         if ( args.showMeta ) {
             html += "<div class='pager-meta'>Viewing " + args.batchStart + "-" + args.batchEnd +
-                " of " + args.totalItemsCount + " " + args.itemsAlias + "</div>";
+            " of " + args.totalItemsCount + " " + args.itemsAlias + "</div>";
         }
 
         if ( args.hasPages ) {
@@ -151,24 +145,24 @@
 
             if ( args.showFirstPageButton ) {
                 html += "<li class='pager-button first' data-page-number='" + args.firstPage + "'>" +
-                    args.firstPage + "</li>";
+                args.firstPage + "</li>";
             }
 
             if ( args.hasPreviousPage ) {
                 html += "<li class='pager-button previous' data-page-number='" +
-                    args.previousPageNumber + "'><</li>";
+                args.previousPageNumber + "'><</li>";
             }
 
             html += getIndicatorsInRange( args.startPageNumber, args.endPageNumber, args.currentPage );
 
             if ( args.hasNextPage ) {
                 html += "<li class='pager-button next' data-page-number='" +
-                    args.nextPageNumber + "'>></span></li>";
+                args.nextPageNumber + "'>></span></li>";
             }
 
             if ( args.showLastPageButton ) {
                 html += " <li class='pager-button last'' data-page-number='" +
-                    args.lastPage + "'>" + args.lastPage + "</li>";
+                args.lastPage + "'>" + args.lastPage + "</li>";
             }
         }
 
@@ -190,4 +184,16 @@
         return pageNumber === currentPageNumber ? " current-page" : "";
     }
 
-})( window, jQuery );
+    function isFunction( test ) {
+        return Object.prototype.toString.call( test ) === "[object Function]";
+    }
+
+    function isArray( test ) {
+        return Object.prototype.toString.call( test ) === "[object Array]";
+    }
+
+    function isUnDefined( test ) {
+        return Object.prototype.toString.call( test ) === "[object Undefined]";
+    }
+
+})( window, document, jQuery );

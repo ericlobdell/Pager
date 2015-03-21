@@ -90,13 +90,16 @@ describe( "Pager", function () {
         it( "should fire the onPageChange event with the right items", function () {
             var spy = jasmine.createSpy( 'spy' );
 
-            _pager = new Pager( _items, { itemsPerPage: 3, onPageChange: noop } );
-            _pager.onPageChange.attach( spy );
+            var pager = new Pager( _items, {
+                itemsPerPage: 3,
+                onPageChange: spy, 
+                deferFirstPageLoad: true
+            } );
 
-            _pager.loadPage( 2 );
+            pager.loadPage( 2 );
             expect( spy.calls.argsFor( 0 )[ 1 ].items ).toEqual( [ 4, 5, 6 ] );
 
-            _pager.loadPage( 3 );
+            pager.loadPage( 3 );
             expect( spy.calls.argsFor( 1 )[ 1 ].items ).toEqual( [ 7, 8, 9 ] );
         } );
     } )
